@@ -1,7 +1,6 @@
-// src/hooks/useDependencyVisualizer.ts
 import { useCallback } from 'react';
-import { useQuery, useMutation } from 'react-query';
-import { useStore } from 'src/store/useStore';
+import { useMutation } from 'react-query';
+import { useStore } from '../store/useStore';
 import { AnalysisResult, GraphData } from '../types';
 
 export const useDependencyVisualizer = () => {
@@ -11,6 +10,7 @@ export const useDependencyVisualizer = () => {
         setFileInfo,
         setErrorInfo,
         setRawContent,
+        setSelectedNode,
         repoUrl,
         accessToken,
         searchTerm,
@@ -90,37 +90,39 @@ export const useDependencyVisualizer = () => {
         (node: { id: string }) => {
             if (analysisResult) {
                 const fileName = node.id;
+                setSelectedNode(fileName);
                 const fileData = analysisResult[fileName];
                 if (fileData) {
                     const { imports, exports } = fileData;
                     const importedBy = Object.entries(analysisResult)
-                        .filter(([_, data]: any) => data?.imports.includes(fileName))
+                        .filter(([_, data]) => data.imports.includes(fileName))
                         .map(([file]) => file);
 
                     setFileInfo(`
-          <h2>${fileName}</h2>
-          <h3>Imports:</h3>
-          <ul>${imports.map((imp: any) => `<li>${imp}</li>`).join('')}</ul>
-          <h3>Exports:</h3>
-          <ul>${exports.map((exp: any) => `<li>${exp}</li>`).join('')}</ul>
-          <h3>Imported by:</h3>
-          <ul>${importedBy.map((file) => `<li>${file}</li>`).join('')}</ul>
-        `);
+                        <h2>${fileName}</h2>
+                        <h3>Imports:</h3>
+                        <ul>${imports.map((imp) => `<li>${imp}</li>`).join('')}</ul>
+                        <h3>Exports:</h3>
+                        <ul>${exports.map((exp) => `<li>${exp}</li>`).join('')}</ul>
+                        <h3>Imported by:</h3>
+                        <ul>${importedBy.map((file) => `<li>${file}</li>`).join('')}</ul>
+                    `);
                 } else {
                     setFileInfo(`<p>File not found in analysis result: ${fileName}</p>`);
                 }
             }
         },
-        [analysisResult, setFileInfo]
+        [analysisResult, setFileInfo, setSelectedNode]
     );
 
     const searchFile = () => {
         if (analysisResult && searchTerm) {
-            const node = graphData.nodes.find((n: any) => n.id === searchTerm);
+            const node = graphData.nodes.find((n) => n.id === searchTerm);
             if (node) {
                 handleNodeClick(node);
             } else {
                 setFileInfo(`<p>File not found: ${searchTerm}</p>`);
+                setSelectedNode(null);
             }
         }
     };

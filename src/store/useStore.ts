@@ -19,6 +19,8 @@ interface Store {
     setRepoUrl: (url: string) => void
     accessToken: string
     setAccessToken: (token: string) => void
+    selectedNode: string | null
+    setSelectedNode: (node: string | null) => void
 }
 
 export const useStore = create<Store>((set) => ({
@@ -38,4 +40,6 @@ export const useStore = create<Store>((set) => ({
     setRepoUrl: (url) => set({ repoUrl: url }),
     accessToken: '',
     setAccessToken: (token) => set({ accessToken: token }),
+    selectedNode: null,
+    setSelectedNode: (node) => set({ selectedNode: node }),
 }))

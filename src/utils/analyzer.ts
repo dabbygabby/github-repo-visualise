@@ -17,7 +17,7 @@ interface PackageJson {
   devDependencies?: { [key: string]: string };
 }
 
-function analyzeFile(filePath: string, program: ts.Program): FileAnalysis {
+function analyzeFile(filePath: string, program: ts.Program, projectPath: string): FileAnalysis {
   const sourceFile = program.getSourceFile(filePath);
   const imports: string[] = [];
   const exports: string[] = [];
@@ -27,7 +27,14 @@ function analyzeFile(filePath: string, program: ts.Program): FileAnalysis {
       if (ts.isImportDeclaration(node)) {
         const moduleSpecifier = node.moduleSpecifier;
         if (ts.isStringLiteral(moduleSpecifier)) {
-          imports.push(moduleSpecifier.text);
+          const importPath = moduleSpecifier.text;
+          if (importPath.startsWith('.')) {
+            const absoluteImportPath = path.resolve(path.dirname(filePath), importPath);
+            const relativeToProjectRoot = path.relative(projectPath, absoluteImportPath);
+            imports.push(relativeToProjectRoot);
+          } else {
+            imports.push(importPath);
+          }
         }
       } else if (ts.isExportDeclaration(node)) {
         if (node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)) {
@@ -80,8 +87,9 @@ export function analyzeProject(projectPath: string): AnalysisResult {
 
   parsedCommandLine.fileNames.forEach(fileName => {
     if (!fileName.includes('node_modules') && !fileName.endsWith('.d.ts')) {
-      const relativePath = path.relative(projectPath, fileName);
-      result[relativePath] = analyzeFile(fileName, program);
+      const absolutePath = path.resolve(projectPath, fileName);
+      const relativeToProjectRoot = path.relative(projectPath, absolutePath);
+      result[relativeToProjectRoot] = analyzeFile(absolutePath, program, projectPath);
     }
   });
 

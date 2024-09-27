@@ -1,14 +1,15 @@
 // src/pages/index.tsx
-import React from 'react';
-import Head from 'next/head';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { AnalysisForm } from '../components/AnalysisForm';
-import { FileUploader } from '../components/FileUploader';
-import { SearchBar } from '../components/SearchBar';
-import { Graph } from '../components/Graph';
-import { FileInfo } from '../components/FileInfo';
-import { ErrorInfo } from '../components/ErrorInfo';
-import { RawContent } from '../components/RawContent';
+import React from "react";
+import Head from "next/head";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { AnalysisForm } from "../components/AnalysisForm";
+import { FileUploader } from "../components/FileUploader";
+import { SearchBar } from "../components/SearchBar";
+import { Graph } from "../components/Graph";
+import { FileInfo } from "../components/FileInfo";
+import { ErrorInfo } from "../components/ErrorInfo";
+import { RawContent } from "../components/RawContent";
+import { NodeDetails } from "../components/NodeDetails";
 
 const queryClient = new QueryClient();
 
@@ -26,7 +27,14 @@ const DependencyVisualizer: React.FC = () => {
         <AnalysisForm />
         <FileUploader />
         <SearchBar />
-        <Graph />
+        <div className="flex flex-col md:flex-row">
+          <div className="w-full md:w-2/3 pr-0 md:pr-4">
+            <Graph />
+          </div>
+          <div className="w-full md:w-1/3 mt-4 md:mt-0">
+            <NodeDetails />
+          </div>
+        </div>
         <FileInfo />
         <ErrorInfo />
         <RawContent />

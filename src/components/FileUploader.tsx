@@ -14,7 +14,7 @@ export const FileUploader: React.FC = () => {
   };
 
   return (
-    <div className="mb-4">
+    <div className="mb-4 flex flex-col w-1/2">
       <Input type="file" accept=".json" onChange={handleFileChange} />
     </div>
   );

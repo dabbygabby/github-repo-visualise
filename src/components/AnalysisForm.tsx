@@ -15,7 +15,7 @@ export const AnalysisForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4 space-y-4">
+    <form onSubmit={handleSubmit} className="mb-4 space-y-4 flex flex-col w-1/2">
       <Input
         type="text"
         value={repoUrl}

@@ -13,7 +13,7 @@ export const Graph: React.FC = () => {
   const { handleNodeClick } = useDependencyVisualizer();
 
   return (
-    <div style={{ width: "100%", height: "600px" }} className="mb-4">
+    <div className="mb-4 flex items-center justify-center w-1/2">
       {graphData.nodes.length > 0 && (
         <ForceGraph2D
           graphData={graphData}
